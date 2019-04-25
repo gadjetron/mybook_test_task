@@ -17,5 +17,7 @@ from django.urls import re_path
 from . import views
 
 urlpatterns = [
-    re_path(r'^$', views.index, name='home_page')
+    re_path(r'^$', views.index, name='home_page'),
+    re_path(r'^auth/$', views.auth_user, name='auth_user'),
+    re_path(r'^user_books/$', views.get_user_books)
 ]
