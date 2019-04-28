@@ -18,11 +18,13 @@
     <div class="container-fluid p-0">
         <div class="d-flex flex-column align-items-center bg-light">
             <h3 class="pt-2">Аутентификация</h3>
-            <form id="auth_form" class="d-flex flex-column p-3 mx-auto w-50">
-                <input type="email" class="form-control my-2"
+            <form id="auth_form" class="d-flex flex-column p-3 mx-auto w-50"
+                action="{% url 'auth_user'%}" method="post">
+                {% csrf_token %}
+                <input type="email" class="form-control my-2" name="email"
                     id="user_email" placeholder="E-mail" required>
 
-                <input type="password" class="form-control mb-2"
+                <input type="password" class="form-control mb-2" name="password"
                     id="user_password" placeholder="Пароль" required>
 
                 <button id="submit_button" type="submit"
