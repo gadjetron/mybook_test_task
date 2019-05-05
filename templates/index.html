@@ -33,8 +33,75 @@
                 </button>
             </form>
         </div>
+        <div class="bg-light border-top" id="books_container">
+            <template id="book_template">
+                <div class="media m-3 w-75">
+                    <img class="book_cover_img" alt="Book cover">
+                    <div class="media-body text-left pl-3">
+                        <h4 class="book_name font-weight-normal"></h4>
+                        <h5 class="book_authors lead"></h5>
+                    </div>
+                </div>
+            </template>
+
+            <h3 class="mt-3 text-center">Книги пользователя</h3>
+            <div id="user_books" class="d-flex flex-column align-items-center p-3">
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script>
+        let book_template = document.getElementById("book_template").content;
+        let books_container = document.getElementById("user_books");
+
+        let image_url_prefix = "https://i1.mybook.io/c/124x196/"
+
+        display_user_books = (books) => {
+            for (let book_item of books){
+                let book = book_item.book;
+
+                let book_name = book.name;
+                let book_cover_url = book.default_cover;
+                let book_authors = book.authors_names;
+
+                let image_url = image_url_prefix + book_cover_url;
+                book_template.querySelector(".book_cover_img").src = image_url;
+
+                book_template.querySelector(".book_name").textContent = book_name;
+                book_template.querySelector(".book_authors").textContent = book_authors;
+
+                books_container.appendChild(book_template.cloneNode(true));
+            }
+        }
+
+        get_user_books = () => {
+            $(books_container).empty();
+
+            $.get("/user_books/", (response) => {
+                let json_data = JSON.parse(JSON.stringify(response));
+
+                let books = json_data.objects;
+
+                display_user_books(books);
+
+            }, "json");
+        }
+
+        auth_user = (auth_data) => {
+            $.post("/auth/", auth_data, () => {
+                get_user_books();
+            });
+        }
+
+        $("#auth_form").on('submit', function (event) {
+            this.checkValidity();
+            event.preventDefault();
+
+            const auth_form_data = $(this).serialize();
+
+            auth_user(auth_form_data);
+        });
+    </script>
   </body>
 </html>
