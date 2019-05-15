@@ -78,12 +78,36 @@
         get_user_books = () => {
             $(books_container).empty();
 
-            $.get("/user_books/", (response) => {
+            $.get("/user_books/", async (response) => {
                 let json_data = JSON.parse(JSON.stringify(response));
 
                 let books = json_data.objects;
+                let metadata = json_data.meta;
+                let next_page_url = metadata.next;
 
                 display_user_books(books);
+
+                while (next_page_url != null) {
+                    await fetch("/next_page/", {
+                        headers: {
+                            "X-Next-Page-Url": next_page_url
+                        }
+                    })
+                    .then((data) => {
+                        data.body.locked = false;
+
+                        let json = data.json();
+
+                        return json;
+                    })
+                    .then((json) => {
+                        books = json.objects;
+                        metadata = json.meta;
+                        next_page_url = metadata.next;
+
+                        display_user_books(books);
+                    });
+                }
 
             }, "json");
         }
