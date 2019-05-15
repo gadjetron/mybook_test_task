@@ -39,3 +39,16 @@ def get_user_books(request):
     books = requests.get(USER_BOOKS_URL, headers=headers).json()
 
     return JsonResponse(books)
+
+
+def get_next_page(request):
+    headers = {
+        "Accept": "application/json; version=5",
+        "Cookie": "session={}".format(request.COOKIES["session"])
+    }
+
+    next_page_url = "https://mybook.ru" + request.META['HTTP_X_NEXT_PAGE_URL']
+
+    books = requests.get(next_page_url, headers=headers).json()
+
+    return JsonResponse(books)
