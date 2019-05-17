@@ -67,6 +67,10 @@
                 let book_cover_url = book.default_cover;
                 let book_authors = book.authors_names;
 
+                if (book_authors == "") {
+                    book_authors = "Нет автора(-ов)";
+                }
+
                 let image_url = image_url_prefix + book_cover_url;
                 book_template.querySelector(".book_cover_img").src = image_url;
 
